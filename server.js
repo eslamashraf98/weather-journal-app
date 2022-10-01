@@ -37,7 +37,7 @@ app.get('/All', sendData)
 
 function sendData(request, response) {
     response.send(projectData)
-}
+};
 
 // POST route
 app.post('/addWeatherData', addData)
@@ -48,4 +48,4 @@ function addData(request, response) {
     projectData.user_response = request.body.user_response;
     response.end();
     console.log(projectData)
-}
+};
