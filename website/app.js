@@ -5,6 +5,7 @@ const apikey = '&appid=fe7ad27a476129f711459d73facb6b84&units=metric';
 // Create a new date instance dynamically with JS
 let d = new Date();
 let newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
+
 function performAction(e) {
     const zipCode = document.getElementById('zip').value;
     const feelings = document.getElementById('feelings').value;
@@ -70,4 +71,5 @@ const updateUI = async () => {
         console.log('error', error);
     }
 };
+
 document.getElementById('generate').addEventListener('click', performAction);
