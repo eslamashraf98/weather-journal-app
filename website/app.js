@@ -1,36 +1,32 @@
-/* Global Variables */
-const baseURL = 'https://api.openweathermap.org/data/2.5/weather?zip=';
-const apikey = '&appid=fe7ad27a476129f711459d73facb6b84&units=metric';
+//* Global Variables */
+const baseLink = 'https://api.openweathermap.org/data/2.5/weather?zip=';
+const key = '&appid=fe7ad27a476129f711459d73facb6b84&units=metric';
 
 // Create a new date instance dynamically with JS
-let d = new Date();
-let newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
-
-function performAction(e) {
-    const zipCode = document.getElementById('zip').value;
-    const feelings = document.getElementById('feelings').value;
+let date = new Date ();
+let newDate = date.getDay() + '.' + date.getMonth() + '.' + date.getFullYear();
+function start(x) {
+    const zipCode = document.querySelector('#zip').value;
+    const feel = document.querySelector('#feelings').value;
     console.log(newDate);
-    getTemperature(baseURL, zipCode, apikey)
-        .then(function (data) {
+
+    Temperature(baseLink, zipCode, key)
+        .then(function (info) {
         // Add data to POST request
-            postData('http://localhost:8080/addWeatherData', { temperature: data.main.temp, date: newDate, user_response: feelings })
-        // Function which updates UI
-                .then(function () {
-                    updateUI()
-                })
+            postInfo('/weatherData', { temperature: info.main.temp, date: newDate, user_response: feel })
+            update();
         })
-}
+};
 
 // Async GET
-const getTemperature = async (baseURL, zipCode, apikey) => {
-    // const getTemperatureDemo = async (url)=>{
-    const response = await fetch(baseURL + zipCode + apikey)
-    // console.log(response);
+const Temperature = async (baseLink, zipCode, key) => {
+    const response = await fetch(baseLink + zipCode + key)
+    console.log(response);
     try {
-        const data = await response.json();
-        console.log(data.main.temp);
+        const info = await response.json();
+        console.log(info.main.temp);
         console.log('success');
-        return data;
+        return info;
     }
     catch (error) {
         console.log('error', error);
@@ -38,19 +34,17 @@ const getTemperature = async (baseURL, zipCode, apikey) => {
 };
 
 // Async POST
-const postData = async (URL = '', data = {}) => {
-    const req = await fetch(URL, {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+const postInfo = async (link = '', info = {}) => {
+    const req = await fetch(link, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {"Content-Type" : "application/json"},
+        body: JSON.stringify(info),
     });
     try {
-        const newData = await req.json();
-        console.log(newData);
-        return newData;
+        const newInfo = await req.json();
+        console.log(newInfo);
+        return newInfo;
     }
     catch (error) {
         console.log('Error', error);
@@ -58,18 +52,17 @@ const postData = async (URL = '', data = {}) => {
 };
 
 // Update user interface
-const updateUI = async () => {
-    const request = await fetch('http://localhost:8080/All');
+const update = async () => {
+    const request = await fetch('http://localhost:5000/addData');
     try {
-        const allData = await request.json();
-        console.log(allData);
-        document.getElementById('date').innerHTML = allData.date;
-        document.getElementById('temp').innerHTML = allData.temperature + '<sup>°</sup>C';
-        document.getElementById('content').innerHTML = allData.user_response;
+        const updateData = await request.json();
+        console.log(updateData);
+        document.querySelector('#date').innerHTML = updateData.date;
+        document.querySelector('#temp').innerHTML = updateData.temperature + '<sup>°</sup>C';
+        document.querySelector('#content').innerHTML = updateData.user_response;
     }
     catch (error) {
-        console.log('error', error);
+        console.log('Error', error);
     }
 };
-
-document.getElementById('generate').addEventListener('click', performAction);
+document.querySelector('#generate').addEventListener('click', start);
