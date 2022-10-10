@@ -21,9 +21,10 @@ app.use(cors());
 
 // Initialize the main project folder
 app.use(express.static('website'));
-const port = 5000;
+
 
 // Setup Server
+const port = 5000;
 const server = app.listen(port, listening);
 
 // Callback to debug
@@ -40,7 +41,7 @@ function sendData(request, response) {
 }
 
 // POST route
-app.post('/weatherData', addData)
+app.post('/postData', addData)
 
 function addData(request, response) {
     projectData.temperature = request.body.temperature;
